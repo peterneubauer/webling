@@ -23,7 +23,7 @@ public class VisualizationServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext sc = getServletContext();
         String sessionId = request.getSession(true).getId();
-        String code	= "g:vis(" + request.getParameter("v") + ")";
+        String code	= "w:vis-json(" + request.getParameter("v") + ")";
       
         GremlinEvaluator gremlin = WeblingLauncher.getEvaluatorBySessionId(sessionId);
           

@@ -1,0 +1,51 @@
+body {
+  background-color: #fff !important;
+}
+
+.node {
+  border: 1px solid #555;
+  background-color: #ccc;
+  color:#222;
+  cursor:pointer;
+  padding:2px;
+  font-size: 60% !important;
+}
+
+.hidden {
+  display:none;
+}
+
+div.vertex {
+  font-family: Courier;
+  font-weight: bold;
+  font-size: 13px !important;
+}
+
+div.edge {
+  font-family: Courier;
+  font-weight: bold;
+  font-size: 13px !important;
+  color: red;
+}
+
+div.vertex-props {
+  position: relative;
+  background-color: #F3F4EB;
+  border: 1px #ccc solid;
+  padding: 3px;
+  z-index: 100;
+}
+
+div.edge-props {
+  position: relative;
+  background-color: #F3F4EB;
+  border: 1px #ccc solid;
+  padding: 3px;
+  z-index: 120;
+}
+
+.nothing-found {
+  position: absolute; 
+  top: 250px; 
+  left: 370px;
+}

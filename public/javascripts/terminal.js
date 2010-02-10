@@ -22,28 +22,19 @@ var ReadLine = function(options) {
     
     if(/visualize/.test(v)) {
       var vertex = ".";
-      var parts = v.split(' ');
+      var parts = $.trim(v).split(' ');
 
       if(parts.length == 2) {
         vertex = parts[1];
+        vertex = vertex.replace(/'/g, '"');
       }
+      
+      $.facebox("<iframe src='graph.html?vertex=" + vertex + "' width='1150' height='600'></iframe>");
+      $("#facebox")[0].style.top = '20px';
 
-      $.get('/visualize', { v : vertex }, function(value) {
-        if(/Could not/.test(value)) {
-          h.insertResponse(value);   
-        } else {
-          ht.loadJSON(value);
-          ht.refresh();
-          $('#graph').show();
-          h.insertResponse('true');
-        }
-
-        h.history.push(v);
-        h.historyPtr = h.history.length;
-
-        h.newPromptLine();
-      }, "json");
-
+      h.history.push(v);
+      h.newPromptLine();
+      
       return null;
     }
    
@@ -210,7 +201,7 @@ var DefaultInputHtml = function(stack) {
 var EnterKeyCode      = 13;
 var UpArrowKeyCode    = 38;
 var DownArrowKeyCode  = 40;
-var ReservedWords     = ['repeat', 'while', 'if', 'foreach', 'func', 'path'];
+var ReservedWords     = ['repeat', 'while', 'if', 'foreach', 'func ', 'path'];
 
 $(document).ready(function() {
     var terminal = new ReadLine({htmlForInput: DefaultInputHtml});

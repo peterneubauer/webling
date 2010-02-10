@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="icon" type="image/vnd.microsoft.icon" href="/images/favicon.ico" />
+
+    <link type="text/css" rel="stylesheet" href="stylesheets/reset.css">
+    <link type="text/css" rel="stylesheet" href="stylesheets/terminal.css">
+    <link type="text/css" rel="stylesheet" href="stylesheets/visualizer.css">
+
+    <script type="text/javascript" language="javascript" src="javascripts/prototype.js"></script>
+    <!--[if IE]><script type="text/javascript" language="javascript" src="javascripts/excanvas.js"</script><![endif]-->
+    <script type="text/javascript" language="javascript" src="javascripts/graph.js"></script>
+    <title>Gremlin Web Console</title>
+  </head>
+  <body>
+  	<script type="text/javascript">
+  		document.observe("dom:loaded", function() {
+        var vertex = location.search.split("=")[1];
+        
+        new Ajax.Request('/visualize?v=' + vertex, {
+          method: 'get',
+          onSuccess: function(resp) {
+            var g = new Graph(); 
+            var graph = resp.responseJSON;
+
+            if(!graph || graph.length == 0) {
+                var vertex = location.search.split("=")[1];
+                document.body.innerHTML = '<div class="nothing-found">No relations found for ' + vertex + ' vertex</div>';
+            }
+
+            for(var i = 0; i < graph.length; i++) {
+              var vertex = graph[i].vertex;
+              var relations = graph[i].relations;
+ 
+              var p = g.addNode(vertex, 'vertex');
+
+              for (var j = 0; j < relations.length; j++) {
+                var relation = relations[j];
+                
+                var e = g.addNode(relation.edge, 'edge');
+                var v = g.addNode(relation.vertex, 'vertex');
+                
+                g.addEdge(p, e);
+                g.addEdge(e, v);
+              }
+  				  }
+
+            var layouter = new Graph.Layout.Spring(g);
+            layouter.layout();
+
+            var renderer = new Graph.Renderer.Basic($('vgraph'), g);
+            renderer.draw();
+  			  }
+        });
+  		});
+  	</script>
+  	
+    <canvas id="vgraph" width="1050" height="600"></canvas>
+    <div id="graph-js-data"></div>
+  </body>
+</html>

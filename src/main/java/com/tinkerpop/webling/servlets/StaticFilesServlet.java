@@ -1,5 +1,10 @@
 package com.tinkerpop.webling.servlets;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,21 +22,20 @@ import javax.servlet.http.HttpServletResponse;
 public class StaticFilesServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String target 	= request.getPathInfo();
-        String filepath = (target == "/") ? "./public/index.html" : "./public" + target;
-      
+        String target 	  = request.getPathInfo();
+        String filepath   = (target == "/") ? "./public/index.html" : "./public" + target;
         ServletContext sc = getServletContext();
-        String mimeType = sc.getMimeType(filepath);
- 
+        String mimeType   = sc.getMimeType(filepath);
+        
         if (mimeType == null) {
             sc.log("[GET " + target + "] 500 - Could not get MIME type");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("File not found");
             return;
-        }
-        
-        // set content type
+        } 
+                
         response.setContentType(mimeType);
         response.setStatus(HttpServletResponse.SC_OK); 
         sc.log("[GET " + target + "] 200 OK");
