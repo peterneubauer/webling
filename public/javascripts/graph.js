@@ -11,12 +11,11 @@ Graph.prototype = {
         },
        
         addNode: function(data, type) {
-                var key = data.id;
+                var key = type + '_' + data.id;
                 var node = this.nodeSet[key];
                 
                 if(node == undefined) {
                       // creating element
-
                       if (type == 'edge' && data.id.length > 50) {
                           var label = '<div class="' + type + '-props" style="display: none;">';
                       } else {
@@ -27,7 +26,7 @@ Graph.prototype = {
                           label += "<div><em>" + propKey + "</em>: " + data.properties[propKey] + "</div>";
                       }
                       label += "</div>";
-                      var element = new Element('div', { 'class' : type }).update(label);
+                      var element = new Element('div', { 'class' : type, 'id' : key }).update(label);
                       element.style.cursor = 'pointer';
 
                       element = document.getElementById('graph-js-data').appendChild(element);
