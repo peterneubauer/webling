@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Stack;
@@ -76,7 +78,7 @@ public class GremlinWorkerPool {
     	((Process) info.get("process")).destroy();
     }
 
-    public static String evaluate(final String sessionId, final String code) {
+    public static List<String> evaluate(final String sessionId, final String code) {
         Socket client = null;
         Map<String, Object> info = null;
         
@@ -95,6 +97,7 @@ public class GremlinWorkerPool {
         	System.err.println("Trouble: " + e);
         }
         
+        List<String> resultBuffer = new ArrayList<String>();
         String result = null;
         
         try {
@@ -102,13 +105,16 @@ public class GremlinWorkerPool {
         	PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         	
         	out.println(code);
-        	result = in.readLine();
+
+        	while((result = in.readLine()) != null) {
+        		resultBuffer.add(result);
+        	}
         	client.close();
         } catch(Exception e) {
         	System.err.println("Communication trouble: " + e);
         }
 
-        return result;
+        return resultBuffer;
     }
 
 }

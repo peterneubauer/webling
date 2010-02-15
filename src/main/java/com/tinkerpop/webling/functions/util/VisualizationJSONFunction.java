@@ -13,9 +13,11 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import com.tinkerpop.gremlin.functions.FunctionHelper;
-import com.tinkerpop.gremlin.models.pgm.Vertex;
-import com.tinkerpop.gremlin.models.pgm.Edge;
-import com.tinkerpop.gremlin.models.pgm.Element;
+
+import com.tinkerpop.blueprints.pgm.Vertex;
+import com.tinkerpop.blueprints.pgm.Edge;
+import com.tinkerpop.blueprints.pgm.Element;
+
 
 /**
  *	@author Pavel A. Yaskevich
@@ -32,9 +34,6 @@ public class VisualizationJSONFunction implements Function {
     private static final String LABEL       = "label";
     private static final String PROPERTIES  = "properties";
     private static final String RELATIONS   = "relations";
-
-	  static {
-	  }
 
 	  public String invoke(final ExpressionContext context, final Object[] params) {
         JSONArray jsonGraph = new JSONArray();

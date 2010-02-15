@@ -2,6 +2,7 @@ package com.tinkerpop.webling.servlets;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -45,7 +46,19 @@ public class EvaluatorServlet extends HttpServlet {
         System.setOut(out);
         
         try {
-        	out.println("==> " + GremlinWorkerPool.evaluate(sessionId, code));
+        	List<String> resultBuffer = GremlinWorkerPool.evaluate(sessionId, code);
+        	
+        	int lastIndex = resultBuffer.size() - 1;
+        	
+        	for(int i = 0; i < resultBuffer.size(); i++) {
+        		String line = resultBuffer.get(i);
+        		
+        		if (lastIndex == i) {
+        			out.println("==> " + line);
+        		} else {
+        			out.println(line);
+        		}
+        	}
         } catch(Exception e) {
             out.println(e.getMessage());
         }

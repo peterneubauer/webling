@@ -12,14 +12,13 @@ http://creativecommons.org/licenses/by-sa/2.5/
 var ReadLine = function(options) {
   this.options      = options || {};
   this.htmlForInput = this.options.htmlForInput;
-  this.inputHandler = function(h, v, scope) { 
+  this.inputHandler = function(h, v) { 
     if(v == 'help') {
       h.insertResponse('Coming soon');
       h.newPromptLine();
       return null;
     }
 
-    
     if(/visualize/.test(v)) {
       var vertex = ".";
       var parts = $.trim(v).split(' ');
@@ -38,20 +37,10 @@ var ReadLine = function(options) {
       return null;
     }
    
-    req = '';
-
-    if(scope == true) {
-      for(i = 0; i < h.scopeHistory.length; i++) {
-          req += h.scopeHistory[i] + "\n";
+    $.post('/exec', { code : v }, function(value) {
+      if(/gr-statement/.test(value) == false) {
+        h.insertResponse(value.replace(/\n/g, "<br />"));
       }
-      req += "end\n";
-    } else {
-      req = v;
-    }
-
-    $.post('/exec', { code : req }, function(value) { 
-      h.insertResponse(value.replace(/\n/g, "<br />"));
-
       // Save to the command history...
       if((lineValue = $.trim(v)) !== "") {
         h.history.push(lineValue);
@@ -59,7 +48,7 @@ var ReadLine = function(options) {
       }
 
       h.scopeHistory = [];
-      h.newPromptLine();
+      h.newPromptLine(h.depth);
     });
   };
   this.terminal     = $(this.options.terminalId || "#terminal");
@@ -144,12 +133,8 @@ ReadLine.prototype = {
       return null;
     }
     
-    if($.trim(value) == 'end') {
+    if($.trim(value) == 'end' && this.depth > 0) {
       this.depth--;
-      if(this.depth == 0) { 
-        this.inputHandler(this, value, true);
-        return false;
-      }
     }
 
     var reserved = false;
@@ -161,12 +146,7 @@ ReadLine.prototype = {
     }
 
     this.scopeHistory.push(value);
-    
-    if(this.depth == 0) {
-      this.inputHandler(this, value);
-    } else {
-      this.newPromptLine(this.depth);
-    }
+    this.inputHandler(this, value);
   },
 
   insertResponse: function(response) {

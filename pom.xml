@@ -64,7 +64,12 @@
       <dependency>
           <groupId>com.tinkerpop</groupId>
           <artifactId>gremlin</artifactId>
-          <version>0.2-SNAPSHOT</version>
+          <version>0.2</version>
+      </dependency>
+       <dependency>
+          <groupId>com.tinkerpop</groupId>
+          <artifactId>blueprints</artifactId>
+          <version>0.1</version>
       </dependency>
     </dependencies>
     <repositories>
