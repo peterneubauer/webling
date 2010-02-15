@@ -1,8 +1,5 @@
 package com.tinkerpop.webling;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.PropertyConfigurator;
 
 import org.eclipse.jetty.server.Server;
@@ -10,7 +7,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import com.tinkerpop.gremlin.GremlinEvaluator;
 import com.tinkerpop.webling.servlets.EvaluatorServlet;
 import com.tinkerpop.webling.servlets.StaticFilesServlet;
 import com.tinkerpop.webling.servlets.VisualizationServlet;
@@ -20,21 +16,10 @@ import com.tinkerpop.webling.servlets.VisualizationServlet;
  */
 public class WeblingLauncher {
 
+	public static String VERSION = "0.1";
+	
     static {
-        PropertyConfigurator.configure("./src/main/resources/log4j.properties");        
-    }
-
-    private static Map<String, GremlinEvaluator> evaluators = new HashMap<String, GremlinEvaluator>();
-    
-    public static GremlinEvaluator getEvaluatorBySessionId(String sessionId) {
-        GremlinEvaluator evaluator = evaluators.get(sessionId);
-        
-        if (null == evaluator) {
-            evaluator = new GremlinEvaluator();
-            evaluators.put(sessionId, evaluator);
-        }
-        
-        return evaluator;
+        PropertyConfigurator.configure("./src/main/resources/log4j.properties");
     }
 
     /**
@@ -52,6 +37,10 @@ public class WeblingLauncher {
         if (args.length == 1)
             port = Integer.parseInt(args[0]);
         
+        // start initial workers
+        GremlinWorkerPool.startInitial();
+        
+        // create web server
         Server webling = new Server(port);
         
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);

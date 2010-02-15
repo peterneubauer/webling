@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import com.tinkerpop.gremlin.functions.FunctionHelper;
-import com.tinkerpop.gremlin.models.pgm.Graph;
 import com.tinkerpop.gremlin.models.pgm.Vertex;
 import com.tinkerpop.gremlin.models.pgm.Edge;
 import com.tinkerpop.gremlin.models.pgm.Element;
@@ -101,7 +100,8 @@ public class VisualizationJSONFunction implements Function {
         }
     }
 
-    private static JSONObject JSONElement(final Element element) {
+    @SuppressWarnings("unchecked")
+	private static JSONObject JSONElement(final Element element) {
         JSONObject jsonElement = new JSONObject();
         Map properties = new HashMap();
         
@@ -121,7 +121,8 @@ public class VisualizationJSONFunction implements Function {
         return jsonElement;
     }
 
-    private static List relationsList(final Map<Edge, Vertex> relations) {
+    @SuppressWarnings("unchecked")
+	private static List relationsList(final Map<Edge, Vertex> relations) {
         Map map = null;
         List list = new ArrayList();
 
@@ -135,7 +136,8 @@ public class VisualizationJSONFunction implements Function {
         return list;
     }
 
-    private static Map JSONMap(final Vertex vertex, final Map<Edge, Vertex> relations) {
+    @SuppressWarnings("unchecked")
+	private static Map JSONMap(final Vertex vertex, final Map<Edge, Vertex> relations) {
         Map map = new HashMap();
 
         map.put(VERTEX, JSONElement(vertex));

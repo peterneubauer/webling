@@ -36,7 +36,7 @@ public class WeblingFunctions implements Functions {
         throw EvaluationException.createException(FunctionHelper.makeFunctionName(namespace, name), EvaluationException.EvaluationErrorType.NO_FUNCTION);
     }
 
-    public Set getUsedNamespaces() {
+    public Set<String> getUsedNamespaces() {
         return namespaces;
     }
 }

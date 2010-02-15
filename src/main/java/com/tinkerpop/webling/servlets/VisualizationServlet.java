@@ -1,8 +1,6 @@
 package com.tinkerpop.webling.servlets;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -10,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.tinkerpop.gremlin.GremlinEvaluator;
-import com.tinkerpop.webling.WeblingLauncher;
+import com.tinkerpop.webling.GremlinWorkerPool;
+
 	
 /**
  * @author Pavel A. Yaskevich
@@ -24,16 +22,13 @@ public class VisualizationServlet extends HttpServlet {
         ServletContext sc = getServletContext();
         String sessionId = request.getSession(true).getId();
         String code	= "w:vis-json(" + request.getParameter("v") + ")";
-      
-        GremlinEvaluator gremlin = WeblingLauncher.getEvaluatorBySessionId(sessionId);
-          
+        
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         sc.log("[GET /visualize?v=" + request.getParameter("v") + "] 200 OK");
 
         try {
-            List result = gremlin.evaluate(new ByteArrayInputStream(code.getBytes()));
-            response.getWriter().println(((result.size() == 1) ? result.get(0) : result));
+        	response.getWriter().println(GremlinWorkerPool.evaluate(sessionId, code));
         } catch(Exception e) {
             response.getWriter().println(e.getMessage());
         }
