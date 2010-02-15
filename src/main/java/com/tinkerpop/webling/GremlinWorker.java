@@ -22,7 +22,7 @@ public class GremlinWorker {
 		ServerSocket server = null;
 		
 		GremlinEvaluator gremlin = new GremlinEvaluator();
-	  
+		
 		try {
 			  server = new ServerSocket(Integer.parseInt(args[0]));
 		} catch(Exception e) {
@@ -31,6 +31,9 @@ public class GremlinWorker {
 		
 		
 		while(true) {
+			// Still no native support for this
+			gremlin.evaluate("include 'com.tinkerpop.webling.functions.WeblingFunctions'");
+
 			Socket incoming = server.accept();
   
 			PrintStream out = new PrintStream(incoming.getOutputStream());
@@ -48,7 +51,7 @@ public class GremlinWorker {
 			} catch(Exception e) {
 				out.println(e.getMessage());
 			}
-		  
+			
 			incoming.close();
 		}
 	}

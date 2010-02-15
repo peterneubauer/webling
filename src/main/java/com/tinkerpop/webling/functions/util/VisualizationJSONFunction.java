@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.jxpath.ExpressionContext;
-import org.apache.commons.jxpath.Function;
+import com.tinkerpop.gremlin.functions.Function;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -142,5 +142,9 @@ public class VisualizationJSONFunction implements Function {
         map.put(VERTEX, JSONElement(vertex));
         map.put(RELATIONS, relationsList(relations));
         return map;
+    }
+    
+    public String getName() {
+    	return FUNCTION_NAME;
     }
 }

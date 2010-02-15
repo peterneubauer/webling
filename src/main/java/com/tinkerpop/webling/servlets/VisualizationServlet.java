@@ -1,6 +1,7 @@
 package com.tinkerpop.webling.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -28,7 +29,11 @@ public class VisualizationServlet extends HttpServlet {
         sc.log("[GET /visualize?v=" + request.getParameter("v") + "] 200 OK");
 
         try {
-        	response.getWriter().println(GremlinWorkerPool.evaluate(sessionId, code));
+        	List<String> result = GremlinWorkerPool.evaluate(sessionId, code);
+        	
+        	for(String line : result) {
+        		response.getWriter().println(line);
+        	}
         } catch(Exception e) {
             response.getWriter().println(e.getMessage());
         }
