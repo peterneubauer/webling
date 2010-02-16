@@ -8,6 +8,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+
 import com.tinkerpop.gremlin.GremlinEvaluator;
 
 /**
@@ -17,16 +22,27 @@ import com.tinkerpop.gremlin.GremlinEvaluator;
  */
 public class GremlinWorker {
   
+	private static Logger logger;
+	private static Layout patternLayout;
+
+	static {
+		logger = Logger.getLogger(GremlinWorker.class);
+		patternLayout = new PatternLayout("%d [%t] %p %C{1} - %m%n");
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException {
 		ServerSocket server = null;
+		String logFilename 	= "../../logs/worker-" + args[0] + ".log";
 		
 		GremlinEvaluator gremlin = new GremlinEvaluator();
+		logger.addAppender(new FileAppender(patternLayout, logFilename));
 		
 		try {
-			  server = new ServerSocket(Integer.parseInt(args[0]));
+			server = new ServerSocket(Integer.parseInt(args[0]));
+			logger.info("Worker successfully started on " + args[0] + " port.");
 		} catch(Exception e) {
-			  System.err.println(e);
+			logger.fatal(e);
 		}
 		
 		
@@ -49,9 +65,13 @@ public class GremlinWorker {
 			} catch(NullPointerException e) {
 				out.println("gr-statement");
 			} catch(Exception e) {
-				out.println(e.getMessage());
+				out.println(e.getMessage());	
+				logger.fatal(line + " - " + e.getMessage());
+				incoming.close();
+				continue;
 			}
-			
+
+			if(null != line) logger.info(line + " - evaluated.");
 			incoming.close();
 		}
 	}

@@ -38,6 +38,7 @@ public class WeblingLauncher {
             port = Integer.parseInt(args[0]);
         
         // start initial workers
+        System.out.println("Waiting for workers to start...");
         GremlinWorkerPool.startInitial();
         
         // create web server

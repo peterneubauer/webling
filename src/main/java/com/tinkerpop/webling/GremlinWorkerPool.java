@@ -1,6 +1,7 @@
 package com.tinkerpop.webling;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -23,6 +24,9 @@ public class GremlinWorkerPool {
     private static Stack<Map<String, Object>> idleWorkers;
     private static Map<String, Map<String, Object>> workers;
 
+    private static String WEBLING_JAR  = "/target/webling-" + WeblingLauncher.VERSION + "-standalone.jar";
+    private static String WORKER_CLASS = "com.tinkerpop.webling.GremlinWorker";
+    
     static {
     	idleWorkers = new Stack<Map<String, Object>>();
     	workers = new HashMap<String, Map<String, Object>>();
@@ -62,15 +66,45 @@ public class GremlinWorkerPool {
     	worker.put("port", currentPort);
     	worker.put("process", startWorkerProcess());
     	idleWorkers.push(worker);
+    	
+    	// waiting for worker to start
+    	boolean done = false;
+    	while (!done) {
+    		if (pingWorker(currentPort.intValue())) done = true;
+    	}
+    	
 		currentPort++;
     }
     
     private static Process startWorkerProcess() throws IOException {
-    	ProcessBuilder worker = new ProcessBuilder("/usr/bin/java", 
-    			"-cp", "./target/webling-" + WeblingLauncher.VERSION + "-standalone.jar", 
-    			"com.tinkerpop.webling.GremlinWorker", currentPort.toString());
+    	String currentDirectory = System.getProperty("user.dir");
+    	File workerDirectory = new File(currentDirectory + "/tmp/workers/" + currentPort);
     	
+    	// if directory left from previous webling run - clearing
+    	deleteDirectory(workerDirectory);
+    	
+    	if(!workerDirectory.mkdir())
+    		throw new IOException("Could not create directory for worker on port " + currentPort);
+    	
+    	ProcessBuilder worker = new ProcessBuilder("/usr/bin/java", 
+    			"-cp", currentDirectory + WEBLING_JAR, WORKER_CLASS, currentPort.toString());
+    	
+    	worker.directory(workerDirectory);
         return worker.start();
+    }
+    
+    protected static boolean deleteDirectory(File path) {
+    	if(path.exists()) {
+    		File[] files = path.listFiles();
+    		
+    		for(int i = 0; i < files.length; i++) {
+    			if(files[i].isDirectory())
+    				deleteDirectory(files[i]);
+    			else
+    				files[i].delete();
+    		}
+    	}
+    	return path.delete();
     }
     
     public static void stopWorker(final String sessionId) {
@@ -117,4 +151,16 @@ public class GremlinWorkerPool {
         return resultBuffer;
     }
 
+    private static boolean pingWorker(int port) {
+    	Socket pinger = null;
+    	
+    	try {
+    		 pinger = new Socket("0.0.0.0", port);
+    		 pinger.close();
+    	} catch(Exception e) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
 }
