@@ -20,8 +20,11 @@ public class EvaluatorServlet extends HttpServlet {
     
     private static final long serialVersionUID = 1L;
     private static final String newLineRegex = "(\r\n|\r|\n|\n\r)";
-    
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
         ServletContext sc = getServletContext();
         String code = request.getParameter("code");
         String logMessage = "[POST /exec?code=" + code.replaceAll(newLineRegex, " ") + "] ";
@@ -46,19 +49,19 @@ public class EvaluatorServlet extends HttpServlet {
         System.setOut(out);
         
         try {
-        	List<String> resultBuffer = GremlinWorkerPool.evaluate(sessionId, code);
+            List<String> resultBuffer = GremlinWorkerPool.evaluate(sessionId, code);
         	
-        	int lastIndex = resultBuffer.size() - 1;
+            int lastIndex = resultBuffer.size() - 1;
         	
-        	for(int i = 0; i < resultBuffer.size(); i++) {
-        		String line = resultBuffer.get(i);
+            for(int i = 0; i < resultBuffer.size(); i++) {
+                String line = resultBuffer.get(i);
         		
-        		if (lastIndex == i) {
-        			out.println("==> " + line);
-        		} else {
-        			out.println(line);
-        		}
-        	}
+                if (lastIndex == i) {
+                    out.println("==> " + line);
+                } else {
+                    out.println(line);
+                }
+            }
         } catch(Exception e) {
             out.println(e.getMessage());
         }

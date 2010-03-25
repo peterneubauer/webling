@@ -16,7 +16,7 @@ import com.tinkerpop.webling.servlets.VisualizationServlet;
  */
 public class WeblingLauncher {
 
-	public static String VERSION = "0.1";
+    public static String VERSION = "0.1";
 	
     static {
         PropertyConfigurator.configure("./src/main/resources/log4j.properties");
@@ -24,7 +24,7 @@ public class WeblingLauncher {
 
     /**
      * Initializes server, binds it to specifield port
-     * if no command line arguments given host:port will be 127.0.0.1:8080
+     * if no command line arguments given host:port will be 0.0.0.0:8080
      * Adds servlets to handle gremlin evaluation and static files
      * 
      * @param port 	Port number

@@ -18,14 +18,11 @@ import java.util.Stack;
  *
  */
 public class GremlinWorkerPool {
-    
-	private static int idleWorkersInitial = 1;
-    private static Integer currentPort = 2000;
-    private static Stack<Map<String, Object>> idleWorkers;
-    private static Map<String, Map<String, Object>> workers;
 
-    private static String WEBLING_JAR  = "/target/webling-" + WeblingLauncher.VERSION + "-standalone.jar";
-    private static String WORKER_CLASS = "com.tinkerpop.webling.GremlinWorker";
+    private static int idleWorkersInitial = 1;
+    private static Integer currentPort = 2000;
+    public  static Stack<Map<String, Object>> idleWorkers;
+    public  static Map<String, Map<String, Object>> workers;
     
     static {
     	idleWorkers = new Stack<Map<String, Object>>();
@@ -36,75 +33,67 @@ public class GremlinWorkerPool {
         Map<String, Object> info = null;
 
         if ((info = workers.get(sessionId)) == null) {
-        	// trying to get from idle workers first
-        	if (!idleWorkers.empty()) {
-        		workers.put(sessionId, idleWorkers.pop());
-        		// allocating one more worker for future clients
-        		startIdleWorker();
-        	} else {
-        		// if idle workers will be empty we will be allocating
-        		// new assigned worker here, by hand
-        		info = new HashMap<String, Object>();
+            // trying to get from idle workers first
+            if (!idleWorkers.empty()) {
+                workers.put(sessionId, idleWorkers.pop());
+                
+                // allocating one more worker for future clients
+                if (idleWorkers.size() < 2) {
+                	new Thread() {
+                		public void run() {
+                			Utility.logger.info("Running new idle worker on " + currentPort + " port.");
+                			try {
+                				GremlinWorkerPool.startIdleWorker();
+                			} catch(IOException e) {
+                				Utility.logger.fatal(e.getMessage());
+                			}
+                		}
+                	}.run();
+                }
+            } else {
+            	info = new HashMap<String, Object>();
             
             	info.put("port", currentPort);
             	info.put("process", startWorkerProcess());
             
             	workers.put(sessionId, info);
             	currentPort++;
-        	}
+            }
         }
     }
 
     public static void startInitial() throws IOException {
     	for (int i = 0; i < idleWorkersInitial; i++) {
-    		startIdleWorker();
+            startIdleWorker();
     	}
+        new GarbageCollector();
     }
     
     private static void startIdleWorker() throws IOException {
     	Map<String, Object> worker = new HashMap<String, Object>();
+    	
     	worker.put("port", currentPort);
     	worker.put("process", startWorkerProcess());
     	idleWorkers.push(worker);
     	
-    	// waiting for worker to start
-    	boolean done = false;
-    	while (!done) {
-    		if (pingWorker(currentPort.intValue())) done = true;
-    	}
-    	
-		currentPort++;
+    	currentPort++;
     }
     
     private static Process startWorkerProcess() throws IOException {
     	String currentDirectory = System.getProperty("user.dir");
     	File workerDirectory = new File(currentDirectory + "/tmp/workers/" + currentPort);
     	
-    	// if directory left from previous webling run - clearing
-    	deleteDirectory(workerDirectory);
-    	
-    	if(!workerDirectory.mkdir())
-    		throw new IOException("Could not create directory for worker on port " + currentPort);
-    	
-    	ProcessBuilder worker = new ProcessBuilder("/usr/bin/java", 
-    			"-cp", currentDirectory + WEBLING_JAR, WORKER_CLASS, currentPort.toString());
-    	
-    	worker.directory(workerDirectory);
-        return worker.start();
-    }
-    
-    protected static boolean deleteDirectory(File path) {
-    	if(path.exists()) {
-    		File[] files = path.listFiles();
-    		
-    		for(int i = 0; i < files.length; i++) {
-    			if(files[i].isDirectory())
-    				deleteDirectory(files[i]);
-    			else
-    				files[i].delete();
-    		}
+    	if(!workerDirectory.exists()) {
+    		workerDirectory.mkdir();
+    	} else {
+    		Utility.deleteSubContentFor(workerDirectory);
+    		workerDirectory.mkdir();
     	}
-    	return path.delete();
+
+    	ProcessBuilder worker = new ProcessBuilder("/bin/bash", currentDirectory + "/webling.sh", "start_worker", currentPort.toString());
+    	worker.directory(workerDirectory);
+    	
+    	return worker.start();
     }
     
     public static void stopWorker(final String sessionId) {
@@ -117,7 +106,7 @@ public class GremlinWorkerPool {
         Map<String, Object> info = null;
         
         if ((info = workers.get(sessionId)) == null) {
-        	try {
+            try {
             	GremlinWorkerPool.startWorker(sessionId);
             } catch(Exception e) {
             	System.err.println(e);
@@ -126,41 +115,29 @@ public class GremlinWorkerPool {
         }
         
         try {
-        	client = new Socket("0.0.0.0", ((Integer) info.get("port")).intValue());
+            client = new Socket("127.0.0.1", ((Integer) info.get("port")).intValue());
         } catch(Exception e) {
-        	System.err.println("Trouble: " + e);
+            System.err.println("Trouble: " + e);
         }
         
         List<String> resultBuffer = new ArrayList<String>();
         String result = null;
         
         try {
-        	BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        	PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         	
-        	out.println(code);
+            out.println(code);
 
-        	while((result = in.readLine()) != null) {
-        		resultBuffer.add(result);
-        	}
-        	client.close();
+            while((result = in.readLine()) != null) {
+                resultBuffer.add(result);
+            }
+            client.close();
         } catch(Exception e) {
-        	System.err.println("Communication trouble: " + e);
+            System.err.println("Communication trouble: " + e);
         }
 
         return resultBuffer;
     }
-
-    private static boolean pingWorker(int port) {
-    	Socket pinger = null;
-    	
-    	try {
-    		 pinger = new Socket("0.0.0.0", port);
-    		 pinger.close();
-    	} catch(Exception e) {
-    		return false;
-    	}
-    	
-    	return true;
-    }
+    
 }
