@@ -15,7 +15,7 @@ body {
   width: 960px;
   margin:50px auto 50px auto;
   border: 1px solid black;
-  height: 400px;
+  height: 500px;
   background: black;
   overflow: scroll;
 }
@@ -52,4 +52,9 @@ body {
   color: #45FF17;
   font-size: 16px;
   margin-left: 2px;
+}
+
+li {
+  padding-top: 7px;
+  padding-left: 4px;
 }

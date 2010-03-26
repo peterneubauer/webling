@@ -13,9 +13,13 @@ var ReadLine = function(options) {
   this.options      = options || {};
   this.htmlForInput = this.options.htmlForInput;
   this.inputHandler = function(h, v) { 
-    if(v == 'help') {
-      h.insertResponse('Coming soon');
+    if(/tutorial/.test(v)) {
+      h.insertResponse(h.tutorial.handle(v));
       h.newPromptLine();
+
+      // saving help history
+      h.history.push(v);
+
       return null;
     }
 
@@ -57,14 +61,16 @@ var ReadLine = function(options) {
   this.historyPtr   = 0;
   this.depth        = 0;
   this.scopeHistory = [];
+  this.tutorial = new Tutorial();
   this.initialize();
 };
+
 
 ReadLine.prototype = {
   initialize: function() {
     this.addInputLine();
   },
-
+  
   newPromptLine: function() {
     this.activeLine.value = '';
     this.activeLine.attr({disabled: true});
