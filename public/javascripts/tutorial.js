@@ -52,7 +52,7 @@ Tutorial.prototype = {
     this._a = function() {
       this.prev = this._annotation;
       this.next = this._b;
-
+ 
       return P("Chapter 2a - Defining variables.") + BR() +
              P("&nbsp;&nbsp;Gremlin gives you possibility to work with variables.") + BR() +
              P("&nbsp;&nbsp;Variables in Gremlin must be proceeded by a $ character.") + 
@@ -75,7 +75,33 @@ Tutorial.prototype = {
       this.prev = this._b;
       this.next = this._d;
 
-      return P("Chapter 2c.");
+      return P("Chapter 2c - Using Gremlin build-in functions and data structures (maps, lists).") + BR() +
+             P("&nbsp;Gremlin provides build-in functions and data structures which will be very useful while working with graphs.") + BR() +
+             P("To execute a function you should call it using special format - ”&lt;prefix&gt;:&lt;function_name&gt;(&lt;arg&gt;, ...)”:") + BR() +
+             PLIST("g:print('hello world!') - will execute build-in print function.") + BR() +
+             P("or without arguments:") + BR() +
+             PLIST("g:print() - will print empty string.") + BR() +
+             P("There are functions which could be referenced without &lt;prefix&gt; - global functions - like: null(), false(), true()") + BR() +
+             PLIST("$foo := false() - value returned by false() will be assigned to $foo variable.") + BR() +
+
+             P("&nbsp;Gremlin has own implementation of Map and List data structures (will be familiar to Java developers):") + BR() +
+             PLIST("g:map(&lt;key&gt;, &lt;value&gt;, ...) - function used to construct map objects:") +
+             PLIST("g:map('foo', 'bar') - will return {'foo'='bar'} map.") + BR() +
+             P("the same goes for List:") + BR() + 
+             PLIST("g:list(&lt;value&gt;,...) - function used to construct list objecs:") +
+             PLIST("g:list(1,2,3,4) - will return [1.0, 2.0, 3.0, 4.0].") + BR() +
+             P("result of map or list function could be assigned to a variable:") + BR() +
+             PLIST("$foo := g:map('foo', 'bar')") + 
+             PLIST("$foo := g:list('foo', 'bar')") + BR() + 
+             P("to get value from map use g:get(element, string) function:") + BR() +
+             PLIST("g:get(g:map('foo', 'bar'), 'foo') - returns 'bar'") + BR() + 
+             P("g:get(list, number) function used to get values from list:") + BR() +
+             PLIST("g:get(g:list(3, 4), 1) - returns '3.0'") + BR() +
+             P("to assign new elements to map use g:assign(map,object,object) function:") + BR() +
+             PLIST("$foo := g:map('foo', 'bar')") +
+             PLIST("g:assign($foo, 'foo2', 'bar2') - returns 'bar2'") +
+             PLIST("g:print($foo) - returns {foo2=bar2, foo=bar}") + BR() +
+             P("Gremlin Function Library Reference could be found " + LINK("http://wiki.github.com/tinkerpop/gremlin/gremlin-function-library", "here"));
     }
 
     this._d = function() {
