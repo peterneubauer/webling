@@ -83,7 +83,6 @@ Tutorial.prototype = {
              PLIST("g:print() - will print empty string.") + BR() +
              P("There are functions which could be referenced without &lt;prefix&gt; - global functions - like: null(), false(), true()") + BR() +
              PLIST("$foo := false() - value returned by false() will be assigned to $foo variable.") + BR() +
-
              P("&nbsp;Gremlin has own implementation of Map and List data structures (will be familiar to Java developers):") + BR() +
              PLIST("g:map(&lt;key&gt;, &lt;value&gt;, ...) - function used to construct map objects:") +
              PLIST("g:map('foo', 'bar') - will return {'foo'='bar'} map.") + BR() +
@@ -108,7 +107,26 @@ Tutorial.prototype = {
       this.prev = this._c;
       this.next = this._p3;
 
-      return P("Chapter 2d.");
+      return P("Chapter 2d - Gremlin Loops (foreach, while).") + BR() +
+             P("&nbsp;Gremlin also has build-in loop support - foreach and while:") + BR() +
+             P("1. Foreach") + BR() + 
+             P("&nbsp;The foreach statement will loop over its body the number of times as there are values in the provided loop list. Each item in the list is assigned to a variable and that variable can be referenced in the loop body. The generic structure and example of foreach is provided below.") + BR() +
+             PLIST("foreach variable in xpath_list<br/>&nbsp;&nbsp;statement*<br />end") + BR() +
+             P("Here is a little example how to use it:") + BR() + 
+             PLIST("$i := 0") +
+             PLIST("foreach $j in 1 | 2 | 3") +
+             PLIST("&nbsp;&nbsp;$i := $i + $j") +
+             PLIST("end") + BR() +
+             P("this will return - 6.0.") + BR() + 
+             P("2. While") + BR() + 
+             P("&nbsp;The while statement will loop over its body until the provided condition is met. The generic structure and example of while is provided below.") + BR() +
+             PLIST("while xpath_boolean<br/>&nbsp;&nbsp;statement*<br/>end") + BR() +
+             P("Here is a little example how to use it:") + BR() + 
+             PLIST("$i := 'g'") + 
+             PLIST("while not(matches($i,'ggg'))") +
+             PLIST("&nbsp;&nbsp;$i := concat($i,'g')") + 
+             PLIST("end") + BR() +
+             P("this will return - 'ggg'");
     }
 
     var section = this['_' + sectionId];
