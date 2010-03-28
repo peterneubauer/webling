@@ -13,7 +13,7 @@ var ReadLine = function(options) {
   this.options      = options || {};
   this.htmlForInput = this.options.htmlForInput;
   this.inputHandler = function(h, v) { 
-    if(/tutorial/.test(v)) {
+    if(/^tutorial/.test(v) || /^next/.test(v) || /^prev/.test(v)) {
       h.insertResponse(h.tutorial.handle(v));
       h.newPromptLine();
 
@@ -22,7 +22,7 @@ var ReadLine = function(options) {
 
       return null;
     }
-
+    
     if(/visualize/.test(v)) {
       var vertex = ".";
       var parts = $.trim(v).split(' ');
