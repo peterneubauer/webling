@@ -61,8 +61,7 @@ webling_start ()
     echo "Starting Webling on $PORT port..."
 
     # Launch the application
-    echo "$JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE" > /tmp/pyassk_launch.sh
-    bash /tmp/pyassk_launch.sh &
+    $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE &
     PID=$!
     echo -n "PWD: "
     pwd
