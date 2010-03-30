@@ -1,12 +1,13 @@
 #!/bin/bash
 
 CWD=`dirname $0`
-LOGFILE="$CWD/log/webling-main.log"
-PIDFILE="$CWD/tmp/pids/webling.pid"
-WORKERPIDS="$CWD/tmp/pids/worker.pids"
+(cd $CWD && pwd ) | read WORKING_D
+LOGFILE="$WORKING_D/log/webling-main.log"
+PIDFILE="$WORKING_D/tmp/pids/webling.pid"
+WORKERPIDS="$WORKING_D/tmp/pids/worker.pids"
 
 # Path to jar
-JAR="$CWD/target/webling-*-standalone.jar"
+JAR="$WORKING_D/target/webling-*-standalone.jar"
 
 # Find Java
 if [ "$JAVA_HOME" = "" ] ; then
