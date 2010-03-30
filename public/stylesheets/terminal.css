@@ -10,6 +10,12 @@ body {
   color: #402817;
   font-family: 'Baskerville','Palatino Linotype','Times New Roman',serif;
 }
+#footer {
+  width: 960px;
+  margin:50px auto 50px auto;
+  color: #402817;
+  font-family: 'Baskerville','Palatino Linotype','Times New Roman',serif;
+}
 
 #terminal {
   width: 960px;
