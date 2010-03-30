@@ -62,6 +62,8 @@ webling_start ()
     # Launch the application
     $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE & 
     PID=$!
+    echo -n "PWD: "
+    pwd
     echo "Pid is ${PID} -> ${PIDFILE}"
     ps ax | grep "${PID}"
     echo $PID > $PIDFILE
