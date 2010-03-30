@@ -7,7 +7,7 @@ PIDFILE="$WORKING_D/tmp/pids/webling.pid"
 WORKERPIDS="$WORKING_D/tmp/pids/worker.pids"
 
 # Path to jar
-JAR="$WORKING_D/target/webling-*-standalone.jar"
+JAR="$WORKING_D/target/webling-0.1-standalone.jar"
 
 # Find Java
 if [ "$JAVA_HOME" = "" ] ; then
