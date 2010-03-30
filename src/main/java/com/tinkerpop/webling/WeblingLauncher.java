@@ -19,7 +19,7 @@ public class WeblingLauncher {
     public static String VERSION = "0.1";
 	
     static {
-        //PropertyConfigurator.configure("./src/main/resources/log4j.properties");
+        PropertyConfigurator.configure("./src/main/resources/log4j.properties");
     }
 
     /**
