@@ -60,7 +60,11 @@ webling_start ()
     echo "Starting Webling on $PORT port..."
 
     # Launch the application
-    $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE & echo $! > $PIDFILE
+    $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE & 
+    PID=$!
+    echo "Pid is ${PID} -> ${PIDFILE}"
+    ps ax | grep "${PID}"
+    echo $PID > $PIDFILE
     echo "-> SUCCESS"
 }
 
