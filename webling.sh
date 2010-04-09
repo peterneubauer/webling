@@ -1,11 +1,13 @@
 #!/bin/bash
 
-LOGFILE=log/webling-main.log
-PIDFILE=tmp/pids/webling.pid
-WORKERPIDS=`dirname $0`/tmp/pids/worker.pids
+CWD=`dirname $0`
+WORKING_D=`(cd $CWD && pwd )`
+LOGFILE="$WORKING_D/log/webling-main.log"
+PIDFILE="$WORKING_D/tmp/pids/webling.pid"
+WORKERPIDS="$WORKING_D/tmp/pids/worker.pids"
 
 # Path to jar
-JAR=`dirname $0`/target/webling-*-standalone.jar
+JAR="$WORKING_D/target/webling-0.1-standalone.jar"
 
 # Find Java
 if [ "$JAVA_HOME" = "" ] ; then
@@ -59,7 +61,11 @@ webling_start ()
     echo "Starting Webling on $PORT port..."
 
     # Launch the application
-    $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE & echo $! > $PIDFILE
+    nohup $JAVA $JAVA_OPTIONS -cp $JAR com.tinkerpop.webling.WeblingLauncher $PORT > $LOGFILE &
+    PID=$!
+
+    echo "Pid is ${PID} -> ${PIDFILE}"
+    echo $PID > $PIDFILE
     echo "-> SUCCESS"
 }
 
