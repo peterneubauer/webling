@@ -56,11 +56,12 @@ public class EvaluatorServlet extends HttpServlet {
             for(int i = 0; i < resultBuffer.size(); i++) {
                 String line = resultBuffer.get(i);
         		
-                if (lastIndex == i) {
+                /*if (lastIndex == i) {
                     out.println("==> " + line);
                 } else {
                     out.println(line);
-                }
+                }*/
+                out.println("==> " + line);
             }
         } catch(Exception e) {
             out.println(e.getMessage());

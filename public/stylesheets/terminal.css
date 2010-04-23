@@ -1,53 +1,76 @@
-body {
-  font-family: Monaco, serif;
-  font-size: 20px;
-  background-color: #f3f4eb;
+html, body { margin:0; padding:0; font-family: "Lucida Sans", "Trebuchet MS", sans-serif; }
+body { background: url(/images/bg.gif) repeat-x; }
+
+li {
+  padding-top: 7px;
+  padding-left: 4px;
 }
 
-#header {
-  width: 960px;
-  margin:50px auto 50px auto;
-  color: #402817;
-  font-family: 'Baskerville','Palatino Linotype','Times New Roman',serif;
-}
+.break { clear:both; }
+
+/* Content */
+#content { width: 960px; margin:0 auto;}
+
+/* Controls */
+
+#controls { float:left; width: 140px; height: 400px; background: url(/images/nav_bg.gif) repeat-x; margin-left:10px; font-size: 80%; }
+#controls .control-headline { padding-left:0; }
+#controls a { background: none; border: none; cursor:pointer; font-size: 0.8em; font-family: Helvetica, Arial, sans-serif; }
+
+.submenu { font-size: 90%; padding-left: 5px; }
+
+/* Footer */
+
 #footer {
   width: 960px;
-  margin:50px auto 50px auto;
+  margin:20px 8px 0;
   color: #402817;
   font-family: 'Baskerville','Palatino Linotype','Times New Roman',serif;
 }
 
+
+/* Header */
+#header h1 { margin:0; padding: 30px 0 0 10px; display:block; background: url(/images/logo.gif) 10px 30px no-repeat; width:217px; height:58px; }
+#header h1 a { display:block; width: 217px; height: 58px; }
+#header h1 a span { position:absolute; top:-1000px; }
+
+#header {  width: 960px; height:104px; background:url(/images/header.png) no-repeat; }
+
+/* Terminal */
+#terminal h1 { color: #eee; margin: 4px 0; }
+#terminal a { cursor:pointer; }
+#intro-buttons a { border: none; background: none; color: #ddd; font-size: 1.2em; }
+#intro-buttons a:hover { color: #aaa; }
+
 #terminal {
-  width: 960px;
-  margin:50px auto 50px auto;
-  border: 1px solid black;
-  height: 500px;
+  float:left;
+  width: 800px;
+  height: 400px;
   background: black;
   overflow: scroll;
+  font-family: monospace;
 }
 
 #terminal div.line {
-  width: 940px;
+  width: 780px;
   margin-bottom: 5px;
 }
 
 #terminal input {
-  width: 800px;
+  width: 700px;
   margin: 1px 0 1px 10px;
   border: none;
   display: inline;
   padding: 2px;
   background: black;
   color: #45FF17;
-  font-size: 18px;
-  font-family: Monaco, monospace;
+  font-size: 14px;
 }
 
 #terminal p, #terminal pre {
   margin: 2px;
   color: #45FF17;
-  font-size: 18px;
-  font-family: Monaco, serif;
+  font-size: 14px;
 }
 
 #terminal a {
@@ -60,7 +83,5 @@ body {
   margin-left: 2px;
 }
 
-li {
-  padding-top: 7px;
-  padding-left: 4px;
-}
+.terminal-visual { width:800px; margin: 10px 0; }
+#terminal-intro { width: 200px; text-align: center; margin: 0 auto; }

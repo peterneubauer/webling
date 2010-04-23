@@ -12,13 +12,19 @@ http://creativecommons.org/licenses/by-sa/2.5/
 var ReadLine = function(options) {
   this.options      = options || {};
   this.htmlForInput = this.options.htmlForInput;
-  this.inputHandler = function(h, v) { 
+  this.inputHandler = function(h, v, callback) {
+
+    callback = callback || function() {};
+ 
     if(/^tutorial/.test(v) || /^next/.test(v) || /^prev/.test(v)) {
       h.insertResponse(h.tutorial.handle(v));
       h.newPromptLine();
 
       // saving help history
       h.history.push(v);
+
+      // Tell the caller that the execution is complete
+      callback();
 
       return null;
     }
@@ -37,7 +43,10 @@ var ReadLine = function(options) {
 
       h.history.push(v);
       h.newPromptLine();
-      
+
+      // Tell the caller that the execution is complete
+      callback();
+
       return null;
     }
    
@@ -45,6 +54,7 @@ var ReadLine = function(options) {
       if(/gr-statement/.test(value) == false) {
         h.insertResponse(value.replace(/\n/g, "<br />"));
       }
+
       // Save to the command history...
       if((lineValue = $.trim(v)) !== "") {
         h.history.push(lineValue);
@@ -53,6 +63,9 @@ var ReadLine = function(options) {
 
       h.scopeHistory = [];
       h.newPromptLine(h.depth);
+
+      // Tell the caller that the execution is complete
+      callback();
     });
   };
   this.terminal     = $(this.options.terminalId || "#terminal");
@@ -133,7 +146,10 @@ ReadLine.prototype = {
   },
 
   // Return the handler's response.
-  processInput: function(value) {
+  processInput: function(value, callback) {
+
+    callback = callback || function() {};
+
     if($.trim(value) == '') {
       this.newPromptLine();
       return null;
@@ -152,7 +168,7 @@ ReadLine.prototype = {
     }
 
     this.scopeHistory.push(value);
-    this.inputHandler(this, value);
+    this.inputHandler(this, value, callback);
   },
 
   insertResponse: function(response) {
@@ -191,4 +207,11 @@ var ReservedWords     = ['repeat', 'while', 'if', 'foreach', 'func ', 'path'];
 
 $(document).ready(function() {
     var terminal = new ReadLine({htmlForInput: DefaultInputHtml});
+
+    var controls = new Webling.Controls($, $('#controls'), terminal, Webling.shortcuts);
+
+    // Add next/previous buttons to UI and uncomment these to enable that functionality.
+    $("#tutorial-button").click( controls.createCallback( [ 'tutorial' ] ));
+    //$("#previous-button").click( controls.createCallback( [ 'previous' ] ));
+
 });

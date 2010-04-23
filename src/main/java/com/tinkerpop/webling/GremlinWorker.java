@@ -80,10 +80,17 @@ public class GremlinWorker {
             // evaluating gremlin statements
             try {
                 List result = gremlin.evaluate(line);
+
                 // logging last use time
                 lastEvaluationTime = System.currentTimeMillis();
-                // return evaluation result to client
-                out.println(((result.size() == 1) ? result.get(0) : result));
+
+                // return evaluation result to client, maintaining line-breaks
+                for( Object resultLine : result) {
+                   logger.info(resultLine);
+                   out.println(resultLine);
+                }
+                //out.println(((result.size() == 1) ? result.get(0) : result));
+
             } catch(NullPointerException e) {
                 out.println("gr-statement");
             } catch(Exception e) {
