@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tinkerpop</groupId>
 	<artifactId>webling</artifactId>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<url>http://webling.tinkerpop.com</url>
 	<name>Webling: Web console for Gremlin graph-based programming language.</name>
